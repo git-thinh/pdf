@@ -43,13 +43,13 @@ class Program
         }
     }
 
-    static void _updateDocInfo(string requestId, string file, PDF_STORE store)
+    static void _updateDocInfo(string requestId, string file)
     {
         long docInfoId = 0;
         if (File.Exists(file))
         {
             var redis = new RedisBase(new RedisSetting(REDIS_TYPE.ONLY_WRITE, __PORT_WRITE));
-            var cmd = PDF_COMMAND.GET_DOC_INFO;
+            var cmd = DOC_CMD.DOC_INFO;
             try
             {
                 using (var doc = PdfDocument.Load(file))
@@ -87,16 +87,16 @@ class Program
         }
     }
 
-    static void _splitAllJpeg(string requestId, string file, PDF_STORE store)
+    static void _splitAllJpeg(string requestId, string file)
     {
     }
 
-    static void _splitAllPng(string requestId, string file, PDF_STORE store)
+    static void _splitAllPng(string requestId, string file)
     {
         if (File.Exists(file))
         {
             var redis = new RedisBase(new RedisSetting(REDIS_TYPE.ONLY_WRITE, __PORT_WRITE));
-            var cmd = PDF_COMMAND.SPLIT_ALL_PNG;
+            var cmd = DOC_CMD.PDF_SPLIT_ALL_PNG;
             long docId = 0;
             try
             {
@@ -136,23 +136,25 @@ class Program
         }
     }
 
-    static void __executeBackground(byte[] buf)
+    static void __executeBackground(Tuple<string, byte[]> data)
     {
+        if (data == null) return;
+        var buf = data.Item2;
+
         if (buf.Length < 39) return;
         string requestId = Encoding.ASCII.GetString(buf, 0, 36);
-        var cmd = (PDF_COMMAND)((int)buf[36]);
-        var store = (PDF_STORE)((int)buf[37]);
-        string file = Encoding.UTF8.GetString(buf, 38, buf.Length - 38);
+        var cmd = (DOC_CMD)((int)buf[36]);
+        string file = Encoding.UTF8.GetString(buf, 37, buf.Length - 37);
         switch (cmd)
         {
-            case PDF_COMMAND.GET_DOC_INFO:
-                _updateDocInfo(requestId, file, store);
+            case DOC_CMD.DOC_INFO:
+                _updateDocInfo(requestId, file);
                 break;
-            case PDF_COMMAND.SPLIT_ALL_JPG:
-                _splitAllJpeg(requestId, file, store);
+            case DOC_CMD.PDF_SPLIT_ALL_JPG:
+                _splitAllJpeg(requestId, file);
                 break;
-            case PDF_COMMAND.SPLIT_ALL_PNG:
-                _splitAllPng(requestId, file, store);
+            case DOC_CMD.PDF_SPLIT_ALL_PNG:
+                _splitAllPng(requestId, file);
                 break;
         }
     }
@@ -170,9 +172,11 @@ class Program
             {
                 if (bs.Count > 0)
                 {
-                    var buf = m_subcriber.__getBodyPublish(__SUBCRIBE_IN, bs.ToArray());
+                    var buf = m_subcriber.__getBodyPublish(bs.ToArray(), __SUBCRIBE_IN);
                     bs.Clear();
-                    new Thread(new ParameterizedThreadStart((o) => __executeBackground((byte[])o))).Start(buf);
+                    if (buf != null)
+                        new Thread(new ParameterizedThreadStart((o) => 
+                        __executeBackground((Tuple<string,byte[]>)o))).Start(buf);
                 }
                 Thread.Sleep(100);
                 continue;
