@@ -45,18 +45,18 @@ class Program
 
     static void _updateDocInfo(string requestId, string file)
     {
-        long docInfoId = 0;
+        long docInfoId = 0, docId = 0;
         if (File.Exists(file))
         {
             var redis = new RedisBase(new RedisSetting(REDIS_TYPE.ONLY_WRITE, __PORT_WRITE));
-            var cmd = DOC_CMD.DOC_INFO;
+            var cmd = DOC_CMD.DOC_INFO.ToString();
             try
             {
+                int pageTotal = 0;
                 using (var doc = PdfDocument.Load(file))
                 {
-                    int pageTotal = doc.PageCount;
+                    pageTotal = doc.PageCount;
                     long fileSize = new FileInfo(file).Length;
-                    //docId = StaticDocument.BuildId(DOC_TYPE.PNG_OGRINAL, pageTotal, fileSize);
                     docInfoId = StaticDocument.BuildId(DOC_TYPE.INFO_OGRINAL, pageTotal, fileSize);
                     var docInfo = new oDocument()
                     {
@@ -77,7 +77,7 @@ class Program
                     redis.HSET("_DOC_INFO", docInfoId.ToString(), lz);
                 }
                 if (docInfoId > 0)
-                    redis.PUBLISH(__SUBCRIBE_OUT, string.Format("{0}{1}", requestId, docInfoId));
+                    redis.ReplyRequest(requestId, cmd, 1, docInfoId, pageTotal, "", file);
             }
             catch (Exception exInfo)
             {
@@ -96,7 +96,7 @@ class Program
         if (File.Exists(file))
         {
             var redis = new RedisBase(new RedisSetting(REDIS_TYPE.ONLY_WRITE, __PORT_WRITE));
-            var cmd = DOC_CMD.PDF_SPLIT_ALL_PNG;
+            var cmd = DOC_CMD.PDF_SPLIT_ALL_PNG.ToString();
             long docId = 0;
             try
             {
@@ -121,11 +121,11 @@ class Program
                         {
                             err = ex.Message + Environment.NewLine + ex.StackTrace;
                         }
-                        redis.ReplyStatus(__SUBCRIBE_OUT, requestId, cmd.ToString(), ok ? 1 : 0, docId, i, file, err);
+                        redis.ReplyRequest(requestId, cmd, ok ? 1 : 0, docId, i, "PROCESSING", file, err);
                         sizes.Add(string.Format("{0}:{1}", docId, i), slen);
                     }
                     redis.HMSET("_IMG_SIZE", sizes);
-                    redis.ReplyStatus(__SUBCRIBE_OUT, requestId, cmd.ToString(), 1, docId);
+                    redis.ReplyRequest(requestId, cmd, 1, docId, pageTotal, "COMPLETE", file);
                 }
             }
             catch (Exception exInfo)
@@ -175,8 +175,8 @@ class Program
                     var buf = m_subcriber.__getBodyPublish(bs.ToArray(), __SUBCRIBE_IN);
                     bs.Clear();
                     if (buf != null)
-                        new Thread(new ParameterizedThreadStart((o) => 
-                        __executeBackground((Tuple<string,byte[]>)o))).Start(buf);
+                        new Thread(new ParameterizedThreadStart((o) =>
+                        __executeBackground((Tuple<string, byte[]>)o))).Start(buf);
                 }
                 Thread.Sleep(100);
                 continue;
