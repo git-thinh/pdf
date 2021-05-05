@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A300D3FF-104C-4B70-B7EA-6503A3851D31}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>pdf</RootNamespace>
+    <AssemblyName>pdf</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\build\pdf\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LZ4">
+      <HintPath>..\_DLL2\LZ4.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_DLL2\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core">
+      <HintPath>..\_DLL2\System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\_Shared\MMF\FileMapIOException.cs">
+      <Link>_Shared\MMF\FileMapIOException.cs</Link>
+    </Compile>
+    <Compile Include="..\_Shared\MMF\MapViewStream.cs">
+      <Link>_Shared\MMF\MapViewStream.cs</Link>
+    </Compile>
+    <Compile Include="..\_Shared\MMF\MemoryMappedFile.cs">
+      <Link>_Shared\MMF\MemoryMappedFile.cs</Link>
+    </Compile>
+    <Compile Include="..\_Shared\MMF\StaticMMF.cs">
+      <Link>_Shared\MMF\StaticMMF.cs</Link>
+    </Compile>
+    <Compile Include="..\_Shared\MMF\Win32APIs.cs">
+      <Link>_Shared\MMF\Win32APIs.cs</Link>
+    </Compile>
+    <Compile Include="..\_Shared\MMF\_demo.cs">
+      <Link>_Shared\MMF\_demo.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\CustomScrollControl.cs">
+      <Link>_Shared\PdfiumViewer\CustomScrollControl.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\HitTest.cs">
+      <Link>_Shared\PdfiumViewer\HitTest.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\IPdfDocument.cs">
+      <Link>_Shared\PdfiumViewer\IPdfDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\LinkClickEventHandler.cs">
+      <Link>_Shared\PdfiumViewer\LinkClickEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\MouseWheelMode.cs">
+      <Link>_Shared\PdfiumViewer\MouseWheelMode.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\NativeMethods.cs">
+      <Link>_Shared\PdfiumViewer\NativeMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\NativeMethods.Pdfium.cs">
+      <Link>_Shared\PdfiumViewer\NativeMethods.Pdfium.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\NativeTreeView.cs">
+      <Link>_Shared\PdfiumViewer\NativeTreeView.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PanningZoomingScrollControl.cs">
+      <Link>_Shared\PdfiumViewer\PanningZoomingScrollControl.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PasswordForm.cs">
+      <Link>_Shared\PdfiumViewer\PasswordForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PasswordForm.designer.cs">
+      <Link>_Shared\PdfiumViewer\PasswordForm.designer.cs</Link>
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfBookmarkCollection.cs">
+      <Link>_Shared\PdfiumViewer\PdfBookmarkCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfDocument.cs">
+      <Link>_Shared\PdfiumViewer\PdfDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfError.cs">
+      <Link>_Shared\PdfiumViewer\PdfError.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfException.cs">
+      <Link>_Shared\PdfiumViewer\PdfException.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfFile.cs">
+      <Link>_Shared\PdfiumViewer\PdfFile.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfInformation.cs">
+      <Link>_Shared\PdfiumViewer\PdfInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfiumResolveEventHandler.cs">
+      <Link>_Shared\PdfiumViewer\PdfiumResolveEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfiumResolver.cs">
+      <Link>_Shared\PdfiumViewer\PdfiumResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfLibrary.cs">
+      <Link>_Shared\PdfiumViewer\PdfLibrary.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfMatch.cs">
+      <Link>_Shared\PdfiumViewer\PdfMatch.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfMatches.cs">
+      <Link>_Shared\PdfiumViewer\PdfMatches.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfPageLink.cs">
+      <Link>_Shared\PdfiumViewer\PdfPageLink.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfPageLinks.cs">
+      <Link>_Shared\PdfiumViewer\PdfPageLinks.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfPoint.cs">
+      <Link>_Shared\PdfiumViewer\PdfPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfPrintDocument.cs">
+      <Link>_Shared\PdfiumViewer\PdfPrintDocument.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfPrintMode.cs">
+      <Link>_Shared\PdfiumViewer\PdfPrintMode.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfPrintMultiplePages.cs">
+      <Link>_Shared\PdfiumViewer\PdfPrintMultiplePages.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfPrintSettings.cs">
+      <Link>_Shared\PdfiumViewer\PdfPrintSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfRectangle.cs">
+      <Link>_Shared\PdfiumViewer\PdfRectangle.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfRenderFlags.cs">
+      <Link>_Shared\PdfiumViewer\PdfRenderFlags.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfRotation.cs">
+      <Link>_Shared\PdfiumViewer\PdfRotation.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfTextSpan.cs">
+      <Link>_Shared\PdfiumViewer\PdfTextSpan.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\PdfViewerZoomMode.cs">
+      <Link>_Shared\PdfiumViewer\PdfViewerZoomMode.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\ScrollAction.cs">
+      <Link>_Shared\PdfiumViewer\ScrollAction.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\SetCursorEventHandler.cs">
+      <Link>_Shared\PdfiumViewer\SetCursorEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\StreamExtensions.cs">
+      <Link>_Shared\PdfiumViewer\StreamExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\pdfiumviewer\StreamManager.cs">
+      <Link>_Shared\PdfiumViewer\StreamManager.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\redisbasic\RedisBase.cs">
+      <Link>_Shared\RedisBasic\RedisBase.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\redisbasic\RedisSetting.cs">
+      <Link>_Shared\RedisBasic\RedisSetting.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\redisbasic\REDIS_TYPE.cs">
+      <Link>_Shared\RedisBasic\REDIS_TYPE.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\redisbasic\ResponseException.cs">
+      <Link>_Shared\RedisBasic\ResponseException.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\_document\DOC_TYPE.cs">
+      <Link>_Shared\_Document\DOC_TYPE.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\_document\oDocument.cs">
+      <Link>_Shared\_Document\oDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\_document\StaticDocument.cs">
+      <Link>_Shared\_Document\StaticDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\_Shared\_Document\StaticPdf.cs">
+      <Link>_Shared\_Document\StaticPdf.cs</Link>
+    </Compile>
+    <Compile Include="MyService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MyServiceInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\_DLL2\pdfium.dll">
+      <Link>pdfium.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\_shared\pdfiumviewer\pan.cur">
+      <Link>_Shared\PdfiumViewer\pan.cur</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\_shared\pdfiumviewer\PasswordForm.resx">
+      <Link>_Shared\PdfiumViewer\PasswordForm.resx</Link>
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
