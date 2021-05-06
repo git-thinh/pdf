@@ -49,7 +49,7 @@ class Program
         if (File.Exists(file))
         {
             var redis = new RedisBase(new RedisSetting(REDIS_TYPE.ONLY_WRITE, __PORT_WRITE));
-            var cmd = DOC_CMD.DOC_INFO.ToString();
+            var cmd = COMMANDS.DOC_INFO.ToString();
             try
             {
                 int pageTotal = 0;
@@ -96,7 +96,7 @@ class Program
         if (File.Exists(file))
         {
             var redis = new RedisBase(new RedisSetting(REDIS_TYPE.ONLY_WRITE, __PORT_WRITE));
-            var cmd = DOC_CMD.PDF_SPLIT_ALL_PNG.ToString();
+            var cmd = COMMANDS.PDF_SPLIT_ALL_PNG.ToString();
             long docId = 0;
             try
             {
@@ -143,17 +143,17 @@ class Program
 
         if (buf.Length < 39) return;
         string requestId = Encoding.ASCII.GetString(buf, 0, 36);
-        var cmd = (DOC_CMD)((int)buf[36]);
+        var cmd = (COMMANDS)((int)buf[36]);
         string file = Encoding.UTF8.GetString(buf, 37, buf.Length - 37);
         switch (cmd)
         {
-            case DOC_CMD.DOC_INFO:
+            case COMMANDS.DOC_INFO:
                 _updateDocInfo(requestId, file);
                 break;
-            case DOC_CMD.PDF_SPLIT_ALL_JPG:
+            case COMMANDS.PDF_SPLIT_ALL_JPG:
                 _splitAllJpeg(requestId, file);
                 break;
-            case DOC_CMD.PDF_SPLIT_ALL_PNG:
+            case COMMANDS.PDF_SPLIT_ALL_PNG:
                 _splitAllPng(requestId, file);
                 break;
         }

@@ -203,7 +203,7 @@
       <Link>_Shared\RedisBasic\ResponseException.cs</Link>
     </Compile>
     <Compile Include="..\_shared\_document\StaticDocument.cs">
-      <Link>_Shared\_Document\StaticDocument.cs</Link>
+      <Link>_Shared\StaticDocument.cs</Link>
     </Compile>
     <Compile Include="..\_Shared\__tuple_this.cs">
       <Link>_Shared\__tuple_this.cs</Link>
