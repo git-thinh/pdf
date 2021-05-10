@@ -190,6 +190,9 @@
     <Compile Include="..\_shared\pdfiumviewer\StreamManager.cs">
       <Link>_Shared\PdfiumViewer\StreamManager.cs</Link>
     </Compile>
+    <Compile Include="..\_Shared\RedisBasic\IRedisBase.cs">
+      <Link>_Shared\RedisBasic\IRedisBase.cs</Link>
+    </Compile>
     <Compile Include="..\_shared\redisbasic\RedisBase.cs">
       <Link>_Shared\RedisBasic\RedisBase.cs</Link>
     </Compile>
