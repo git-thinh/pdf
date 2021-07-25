@@ -48,6 +48,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Threading">
+      <HintPath>..\_DLL2\System.Threading.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -210,6 +213,9 @@
     </Compile>
     <Compile Include="..\_Shared\__tuple_this.cs">
       <Link>_Shared\__tuple_this.cs</Link>
+    </Compile>
+    <Compile Include="..\_shared\__web_server.cs">
+      <Link>_Shared\__web_server.cs</Link>
     </Compile>
     <Compile Include="MyService.cs">
       <SubType>Component</SubType>

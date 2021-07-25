@@ -10,23 +10,17 @@ using System.IO;
 using PdfiumViewer;
 using System.Drawing.Imaging;
 using System.Collections.Concurrent;
-using System.Net;
-using System.Web;
-using LZ4;
 
 class Program
 {
-    const int __DB = 15;
-    const int _HTTP_PORT = 12311;
     const int __PORT_WRITE = 1000;
     const int __PORT_READ = 1001;
     const string __SUBCRIBE_IN = "__PDF_IN";
     const string __SUBCRIBE_OUT = "__PDF_OUT";
     static RedisBase m_subcriber;
     static bool __running = true;
-    static ConcurrentDictionary<long, int[]> m_docPageSize = new ConcurrentDictionary<long, int[]>();
 
-    #region [ + ]
+    static ConcurrentDictionary<long, int[]> m_docPageSize = new ConcurrentDictionary<long, int[]>();
 
     static byte[] _pageAsBitmapBytes(PdfDocument doc, int pageCurrent)
     {
@@ -145,70 +139,33 @@ class Program
         }
     }
 
-    #endregion
-
-    #region [ MMF - REDIS ]
-
-    static void __getUrlWriteRedis(COMMANDS cmd, bool ok, string requestId, string url, string data)
+    static void __executeBackground(Tuple<string, byte[]> data)
     {
-        var command = cmd.ToString();
-        Uri uri = null;
-        if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri))
-        {
-            string host = uri.Host.ToLower(), path = uri.PathAndQuery.Substring(1).ToLower();
-            if (host.StartsWith("www.")) host = host.Substring(4);
+        if (data == null) return;
+        var buf = data.Item2;
 
-            var buf = Encoding.UTF8.GetBytes(data);
-            var lz = LZ4Codec.Wrap(buf);
-
-            var redis = new RedisBase(new RedisSetting(REDIS_TYPE.ONLY_WRITE, __PORT_WRITE, __DB));
-            var exist = redis.HEXISTS(host, path);
-            if (!exist)
-            {
-                redis.HSET(host, path, lz);
-                redis.ReplyRequest(requestId, command, 1, host, path);
-            }
-        }
-    }
-
-    #endregion
-
-    static void __executeTaskHttp(Tuple<string, COMMANDS, string> data)
-    {
-        string requestId = data.Item1, input = data.Item3;
-        COMMANDS cmd = data.Item2;
+        if (buf.Length < 39) return;
+        string requestId = Encoding.ASCII.GetString(buf, 0, 36);
+        var cmd = (COMMANDS)((int)buf[36]);
+        string file = Encoding.UTF8.GetString(buf, 37, buf.Length - 37);
         switch (cmd)
         {
             case COMMANDS.DOC_INFO:
-                _updateDocInfo(requestId, input);
+                _updateDocInfo(requestId, file);
                 break;
             case COMMANDS.PDF_SPLIT_ALL_JPG:
-                _splitAllJpeg(requestId, input);
+                _splitAllJpeg(requestId, file);
                 break;
             case COMMANDS.PDF_SPLIT_ALL_PNG:
-                _splitAllPng(requestId, input);
+                _splitAllPng(requestId, file);
                 break;
         }
     }
 
-    #region [ MAIN ]
+    #region [ SETUP WINDOWS SERVICE ]
 
-    static void __executeTaskTcp(Tuple<string, byte[]> data)
-    {
-        if (data == null || data.Item2 == null || data.Item2.Length < 39) return;
-        var buf = data.Item2;
-        string requestId = Encoding.ASCII.GetString(buf, 0, 36);
-        var cmd = (COMMANDS)((int)buf[36]);
-        string text = Encoding.UTF8.GetString(buf, 37, buf.Length - 37);
-        __executeTaskHttp(new Tuple<string, COMMANDS, string>(requestId, cmd, text));
-    }
-
-    static WebServer _http;
     static void __startApp()
     {
-        string uri = string.Format("http://127.0.0.1:{0}/", _HTTP_PORT);
-        _http = new WebServer(__executeTaskHttp);
-        _http.Start(uri);
         m_subcriber = new RedisBase(new RedisSetting(REDIS_TYPE.ONLY_SUBCRIBE, __PORT_READ));
         m_subcriber.PSUBSCRIBE(__SUBCRIBE_IN);
         var bs = new List<byte>();
@@ -222,7 +179,7 @@ class Program
                     bs.Clear();
                     if (buf != null)
                         new Thread(new ParameterizedThreadStart((o) =>
-                        __executeTaskTcp((Tuple<string, byte[]>)o))).Start(buf);
+                        __executeBackground((Tuple<string, byte[]>)o))).Start(buf);
                 }
                 Thread.Sleep(100);
                 continue;
@@ -232,11 +189,7 @@ class Program
         }
     }
 
-    static void __stopApp()
-    {
-        __running = false;
-        _http.Stop();
-    }
+    static void __stopApp() => __running = false;
 
     // FOR SETTING OF WINDOWS SERVICE
 
@@ -245,7 +198,6 @@ class Program
     {
         if (Environment.UserInteractive)
         {
-            Console.Title = string.Format("{0} - {1}", __SUBCRIBE_IN, _HTTP_PORT);
             StartOnConsoleApp(args);
             Console.WriteLine("Press any key to stop...");
             Console.ReadKey(true);
@@ -267,14 +219,6 @@ class Program
     {
         __stopApp();
         if (__threadWS != null) __threadWS.Abort();
-    }
-    static int __freeTcpPort()
-    {
-        var l = new System.Net.Sockets.TcpListener(IPAddress.Loopback, 0);
-        l.Start();
-        int port = ((IPEndPoint)l.LocalEndpoint).Port;
-        l.Stop();
-        return port;
     }
 
     #endregion;
